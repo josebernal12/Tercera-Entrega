@@ -1,7 +1,7 @@
 const { sendMessage } = require('../email/email')
 const Carrito = require('../models/modelCarrito')
 const logger = require('../utils/logger')
-
+const { transporter } = require('../email/email')
 
 
 const crearCarrito = async (req, res) => {
@@ -125,6 +125,15 @@ const comprarCarrito = async (req, res) => {
  
 
     const whatsapp = await sendMessage(req.usuario.telefono, req.usuario.nombre)
+    
+    
+    await transporter.sendMail({
+        from: 'carrito comprado',
+        to: Config.USER,
+        subject: 'carrito comprado',
+        html: `carrito comprado de ${req.usuario.nombre}`
+    })
+
      
 
 
