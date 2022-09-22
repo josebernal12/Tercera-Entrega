@@ -11,7 +11,7 @@ const Config = {
     ACCOUNTSIDE: process.env.ACCOUNTSIDE,
     AUTHTOKEN: process.env.AUTHTOKEN,
     HOST: process.env.HOST,
-    PORT: process.env.PORT
+    EMAILPORT: process.env.EMAILPORT
 
 }
 
