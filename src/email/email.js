@@ -13,7 +13,7 @@ const TEST_MAIL = Config.USER
 
 const transporter = createTransport({
   host: Config.HOST,
-  port: Config.PORT,
+  port: Config.EMAILPORT,
   auth: {
     user: TEST_MAIL,
     pass: Config.PASS
