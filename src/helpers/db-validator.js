@@ -1,45 +1,45 @@
-const Productos = require('../models/modelProducto')
-const User = require('../models/modelRegistro')
-const Carrito = require('../models/modelCarrito')
+const Usuario = require('../models/modelUsuario')
+const Producto = require('../models/modelProducto')
+const Carrito = require('../models/modelCarritos')
+
+const emailValido = async (correo = '') => {
+
+    const existeEmail = await Usuario.findOne({ correo })
+    if (existeEmail) {
+        throw new Error(`el correo ${correo} ya existe`)
+    }
+
+}
+const existeUsuarioPorId = async (id) => {
+
+    const existeID = await Usuario.findById(id)
+    if (!existeID) {
+        throw new Error(`el usuario ${id} no existe`)
+    }
+
+}
 
 const existeProductoPorId = async (id) => {
 
-    const producto = await Productos.findById(id)
+    const existeProducto = await Producto.findById(id)
 
-    if (!producto) {
-        throw new Error(`el producto con el ${id} no existe`)
+    if(!existeProducto){
+        throw new Error(`el producto ${id} no existe`)
     }
-
 }
-
 const existeCarritoPorId = async (id) => {
 
-    const carrito = await Carrito.findById(id)
+    const existeCarrito = await Carrito.findById(id)
 
-    if (!carrito) {
-        throw new Error(`el carrito con el ${id} no existe`)
-
+    if(!existeCarrito){
+        throw new Error(`el carrito ${id} no existe`)
     }
 }
-const existeEmail = async (email) => {
-
-    const emailExiste = await User.findOne({ email })
-
-    if (!emailExiste) {
-        throw new Error(`el email ${email} no esta en la BD`)
-
-    }
-}
-
-
-
-
-
-
 
 
 module.exports = {
+    emailValido,
+    existeUsuarioPorId,
     existeProductoPorId,
-    existeCarritoPorId,
-    existeEmail
+    existeCarritoPorId
 }
