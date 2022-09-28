@@ -1,4 +1,4 @@
-const { Schema, model, default: mongoose } = require('mongoose')
+const { Schema, model } = require('mongoose')
 
 const ProductosSchema = Schema({
     nombre: {
@@ -14,13 +14,13 @@ const ProductosSchema = Schema({
         required: [true, 'el stock es obligatorio']
     },
     usuario:{
-        type: Schema.Types.ObjectId,
-        ref: 'Usuario',
-        required: true
+        type: Schema.ObjectId,
+        ref: 'user',
+       
     },
   
     carrito :{
-      type: Schema.Types.ObjectId,
+      type: Schema.ObjectId,
       ref: 'Carrito'
     },
   
@@ -30,4 +30,4 @@ const ProductosSchema = Schema({
    
 
 
-module.exports = model('producto', ProductosSchema)
+module.exports = model('Producto', ProductosSchema)

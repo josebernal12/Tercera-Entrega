@@ -1,35 +1,47 @@
-require('dotenv').config()
-const cors = require('cors')
 const path = require('path')
 const express = require('express')
-const { dbConnection } = require('../database/db')
+const engine = require('ejs-mate');
+const session = require('express-session');
+const passport = require('passport');
+const { dbConnection } = require('../database/database');
+const { Config } = require('../config/config');
+require('../passport/passport');
 const app = express()
 
 class Server {
     constructor() {
         this.app = app
-        this.PORT = process.env.PORT
+        this.PORT = Config.PORT
         this.path = {
             carrito: '/api/carritos',
             productos: '/api/productos',
             login: '/api/auth',
-            usuarios: '/api/usuarios',
+            registrar: '/api/signup',
+
 
         }
 
-        this.CrearConexionBD()
         this.middlewares()
+        this.CrearConexionBD()
         this.router()
 
     }
     middlewares() {
-        this.app.use(cors())
+
         this.app.use(express.json())
         this.app.use(express.urlencoded({ extended: true }))
-        this.app.set("views", path.join(__dirname, "../views"));
-        this.app.set('view engine', 'hbs');
-        this.app.use(express.static(path.join(__dirname, '../public')))
-        //  console.log(path.join(__dirname, '../public'))
+        this.app.use(session({
+            secret: Config.SECRET,
+            resave: false,
+            saveUninitialized: false,
+            rolling: true
+        }));
+        this.app.use(passport.initialize());
+        this.app.use(passport.session());
+        this.app.set('views', path.join(__dirname, '../views'))
+        this.app.engine('ejs', engine);
+        this.app.set('view engine', 'ejs');
+        this.app.use(express.static(path.join(__dirname, '../views')))
 
 
     }
@@ -39,13 +51,17 @@ class Server {
     }
 
     router() {
-        this.app.use(this.path.carrito, require('../router/routerCarritos'))
-        this.app.use(this.path.productos, require('../router/routerProducto'))
-        this.app.use(this.path.login, require('../router/routerLogin'))
-        this.app.use(this.path.usuarios, require('../router/routerUser'))
+        this.app.use((req, res, next) => {
+            app.locals.user = req.user;
+            next();
+        });
+
+        this.app.use(this.path.registrar, require('../routes/registrarUsuario'))
+        this.app.use(this.path.login, require('../routes/login'))
+        this.app.use(this.path.productos, require('../routes/Producto'))
+        this.app.use(this.path.carrito, require('../routes/Carrito'))
         this.app.use('*', (req, res) => {
-            // res.sendFile(path.join(__dirname, '../public/404.html'))
-            res.render('404')
+            res.render('failpage')
         })
     }
 
